@@ -1,4 +1,3 @@
-dlib
 face_alignment
 mediapipe
 numpy
