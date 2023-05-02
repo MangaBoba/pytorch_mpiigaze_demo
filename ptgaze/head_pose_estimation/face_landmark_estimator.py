@@ -1,6 +1,5 @@
 from typing import List
 
-import dlib
 import face_alignment
 import face_alignment.detection.sfd
 import mediapipe
@@ -13,25 +12,7 @@ from ..common import Face
 class LandmarkEstimator:
     def __init__(self, config: DictConfig):
         self.mode = config.face_detector.mode
-        if self.mode == 'dlib':
-            self.detector = dlib.get_frontal_face_detector()
-            self.predictor = dlib.shape_predictor(
-                config.face_detector.dlib_model_path)
-        elif self.mode == 'face_alignment_dlib':
-            self.detector = dlib.get_frontal_face_detector()
-            self.predictor = face_alignment.FaceAlignment(
-                face_alignment.LandmarksType._2D,
-                face_detector='dlib',
-                flip_input=False,
-                device=config.device)
-        elif self.mode == 'face_alignment_sfd':
-            self.detector = face_alignment.detection.sfd.sfd_detector.SFDDetector(
-                device=config.device)
-            self.predictor = face_alignment.FaceAlignment(
-                face_alignment.LandmarksType._2D,
-                flip_input=False,
-                device=config.device)
-        elif self.mode == 'mediapipe':
+        if self.mode == 'mediapipe':
             self.detector = mediapipe.solutions.face_mesh.FaceMesh(
                 max_num_faces=config.face_detector.mediapipe_max_num_faces,
                 static_image_mode=config.face_detector.
@@ -40,13 +21,7 @@ class LandmarkEstimator:
             raise ValueError
 
     def detect_faces(self, image: np.ndarray) -> List[Face]:
-        if self.mode == 'dlib':
-            return self._detect_faces_dlib(image)
-        elif self.mode == 'face_alignment_dlib':
-            return self._detect_faces_face_alignment_dlib(image)
-        elif self.mode == 'face_alignment_sfd':
-            return self._detect_faces_face_alignment_sfd(image)
-        elif self.mode == 'mediapipe':
+        if self.mode == 'mediapipe':
             return self._detect_faces_mediapipe(image)
         else:
             raise ValueError
