@@ -80,6 +80,6 @@ class LandmarkEstimator:
                                 for pt in prediction.landmark],
                                dtype=np.float64)
                 bbox = np.vstack([pts.min(axis=0), pts.max(axis=0)])
-                bbox = np.round(bbox).astype(np.int32)
+                bbox = np.round(bbox).astype(np.int_)
                 detected.append(Face(bbox, pts))
         return detected
